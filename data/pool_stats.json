@@ -1,0 +1,21 @@
+{
+  "category": "Cell_Phones_and_Accessories",
+  "source_url": "https://huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023/resolve/main/raw/review_categories/Cell_Phones_and_Accessories.jsonl",
+  "file_bytes": 9342568048,
+  "chunks_read": 400,
+  "bytes_read": 104857600,
+  "pool_reviews": 231137,
+  "pool_star_counts": {
+    "1.0": 30791,
+    "2.0": 13573,
+    "3.0": 16914,
+    "4.0": 27353,
+    "5.0": 142506
+  },
+  "pool_label_counts": {
+    "positive": 169859,
+    "negative": 44364,
+    "neutral": 16914
+  },
+  "pool_pct_with_images": 4.84
+}

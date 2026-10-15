@@ -1,0 +1,13 @@
+pandas
+numpy
+requests
+scikit-learn
+matplotlib
+vaderSentiment
+transformers
+torch
+pillow
+gradio
+jupyter
+ipykernel
+nbconvert
