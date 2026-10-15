@@ -1,0 +1,11 @@
+.venv/
+.claude/
+__pycache__/
+.ipynb_checkpoints/
+.gradio/
+data/images/
+video/*.m4a
+video/*.mp4
+video/*.webm
+video/_raw/
+video/notebook.html
