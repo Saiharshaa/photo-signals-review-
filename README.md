@@ -19,7 +19,8 @@ A phone-accessories retailer receives thousands of reviews a day, as text and as
 | `reports/results.csv` | Model comparison table (written by the notebook) |
 | `reports/flag_queue.csv` | Top-20 flagged reviews (written by the notebook) |
 | `video/script.md` | Narration for the 4-minute walkthrough |
-| `video/record.py` | Optional: records a scrolling walkthrough on the script's timings and adds your voiceover |
+| `video/make_voice.py` | Optional: generates the voiceover from `script.md` with offline text-to-speech |
+| `video/record.py` | Optional: records a scrolling walkthrough timed to the voiceover and merges them into an MP4 |
 
 ## Setup and run
 
@@ -33,14 +34,17 @@ pip install -r requirements.txt
 jupyter notebook review_triage.ipynb   # then Kernel > Restart & Run All
 ```
 
-- Restart & Run All took **5.2 minutes** (kernel time) on a 12-thread laptop CPU. BERT inference on the test set is about 3 minutes of that.
+- Restart & Run All takes **2.9 minutes** with the models already cached, and 5.2 minutes on a first run, on a 12-thread laptop CPU. BERT inference on the test set is the slowest step (2–3.5 minutes).
 - The first run also downloads two pretrained models (~1.3 GB) and 100 customer photos (cached in `data/images/`).
 - The last cell launches a Gradio demo with a temporary public `share=True` link.
 - Optional: `python scripts/build_sample.py` re-downloads the sample (~100 MB of HTTP range requests, ~1 minute).
 
-**Video (optional).** Run `pip install playwright imageio-ffmpeg` and `playwright install chromium`, put your voiceover at `video/voice.m4a`, then run `python video/record.py`.
-- It exports the notebook to HTML, records Chromium scrolling through each section on the `video/script.md` timings, and merges the voice into `video/walkthrough.mp4`.
-- The live Gradio demo has to be screen-recorded separately.
+**Video (optional).**
+1. Run `pip install playwright imageio-ffmpeg kokoro soundfile` and `playwright install chromium`.
+2. Run `python video/make_voice.py`. It turns `video/script.md` into a voiceover (`video/voice.m4a`) with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M), an open-weights text-to-speech model that runs offline. **The narration is synthesised, not recorded.**
+3. Run `python video/record.py`. It exports the notebook to HTML, records Chromium scrolling through each section for exactly as long as its narration, and merges everything into `video/walkthrough.mp4`.
+
+To use your own voice instead, save it as `video/voice.m4a` and skip step 2.
 
 ## Data
 
