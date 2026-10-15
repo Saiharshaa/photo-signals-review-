@@ -1,18 +1,19 @@
-"""Record a scrolling walkthrough of the notebook, timed to video/script.md, and add the voiceover.
+"""Record a scrolling walkthrough of the notebook, timed to the narration, and add the voiceover.
 
 Run from the project root, after the notebook has been executed:
     pip install playwright imageio-ffmpeg
     playwright install chromium
+    python video/make_voice.py   # optional: generates voice.m4a + timings.json from script.md
     python video/record.py
 
 Steps:
 1. export review_triage.ipynb to HTML,
-2. open it in headless Chromium with video recording on, and scroll through each section on the SCENES timings,
+2. open it in headless Chromium with video recording on, and scroll through each section on the scene timings,
 3. merge the recording with video/voice.m4a (if it exists) into video/walkthrough.mp4.
 
-The live Gradio demo (3:15-3:45) cannot be recorded from static HTML. Screen-record it separately and
-splice it in, or narrate over the saved demo cell.
+The video shows the saved notebook, so the demo scene shows the demo cell's printed example, not the live app.
 """
+import json
 import subprocess
 import sys
 import time
@@ -21,20 +22,26 @@ from pathlib import Path
 import imageio_ffmpeg
 from playwright.sync_api import sync_playwright
 
-# (start second, heading to show) - keep in sync with the timestamps in video/script.md
+VIDEO_DIR = Path("video")
+VOICE = VIDEO_DIR / "voice.m4a"
+TIMINGS = VIDEO_DIR / "timings.json"
+
+# (start second, notebook heading to show). These defaults are used for a hand-recorded voice.m4a;
+# make_voice.py writes timings.json with the real start of each scene, which replaces them.
 SCENES = [
     (0, "Review triage for a phone-accessories retailer"),
     (25, "1. Data audit"),
     (70, "2. Preprocessing"),
-    (85, "3. Models"),
     (115, "4. Explainability"),
     (150, "5. Combining signals"),
     (195, "6. Live demo"),
     (225, "7. Limitations"),
 ]
 END = 250  # total length in seconds
-VIDEO_DIR = Path("video")
-VOICE = VIDEO_DIR / "voice.m4a"
+if TIMINGS.exists():
+    timings = json.loads(TIMINGS.read_text())
+    SCENES = [(scene["start"], scene["heading"]) for scene in timings["scenes"]]
+    END = timings["end"]
 
 
 def export_html():
@@ -59,6 +66,7 @@ def record(html_path):
         video_start = time.time()  # recording starts with the page; page loading is trimmed later
         page.goto(html_path.as_uri())
         page.wait_for_load_state("networkidle")
+        page.add_style_tag(content="iframe { display: none; }")  # the saved Gradio frame points at a dead server
 
         page_bottom = page.evaluate("document.body.scrollHeight") - 720
         starts = [heading_y(page, text) - 20 for _, text in SCENES] + [page_bottom]

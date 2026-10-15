@@ -5,6 +5,8 @@ __pycache__/
 .gradio/
 data/images/
 video/*.m4a
+video/*.wav
+video/timings.json
 video/*.mp4
 video/*.webm
 video/_raw/
