@@ -41,7 +41,7 @@ ISSUE_KEYWORDS = {
     ],
     "counterfeit": [
         r"\bfake\b", r"counterfeit", r"knock[- ]?off", r"\breplica\b", r"\bbootleg\b",
-        r"not (genuine|authentic|original|oem|real)",
+        r"not (genuine|authentic|original|oem|real)\b",
     ],
     "wrong_item": [
         r"wrong (item|color|colour|size|model|product|one|case|cable|charger)",
@@ -58,7 +58,8 @@ ISSUE_KEYWORDS = {
         r"(charges?|charging) (very |so |really )?slow", r"slow(ly)? charg", r"overheat",
         r"gets? (very |really |so )?hot", r"disconnect", r"battery (drains?|dies)",
         r"(weak|poor|bad) (signal|reception|connection|sound|quality)", r"flimsy", r"cheaply made",
-        r"(doesn't|does not|didn't|did not) fit", r"falls? off", r"peel(s|ed|ing)? off", r"\bbubbles?\b",
+        r"(doesn't|does not|didn't|did not) fit", r"falls? off", r"peel(s|ed|ing)? off",
+        r"(has|have|had|left|full of|lots of|still) (air |some |many )?bubbles",
     ],
 }
 
