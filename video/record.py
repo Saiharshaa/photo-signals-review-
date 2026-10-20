@@ -9,7 +9,8 @@ Run from the project root, after the notebook has been executed:
 Steps:
 1. export review_triage.ipynb to HTML,
 2. open it in headless Chromium with video recording on, and scroll through each section on the scene timings,
-3. merge the recording with video/voice.m4a (if it exists) into video/walkthrough.mp4.
+3. merge the recording with video/voice.m4a (if it exists) into video/walkthrough.mp4, burning in
+   video/subtitles.srt (if it exists) so the subtitles show in every player.
 
 The video shows the saved notebook, so the demo scene shows the demo cell's printed example, not the live app.
 """
@@ -25,6 +26,9 @@ from playwright.sync_api import sync_playwright
 VIDEO_DIR = Path("video")
 VOICE = VIDEO_DIR / "voice.m4a"
 TIMINGS = VIDEO_DIR / "timings.json"
+SUBTITLES = VIDEO_DIR / "subtitles.srt"
+# White text on a near-opaque dark box, so it stays readable over the notebook's code and tables
+SUBTITLE_STYLE = "FontName=Arial,FontSize=14,BorderStyle=3,OutlineColour=&H1A000000,Outline=1,Shadow=0,MarginV=16"
 
 # (start second, notebook heading to show). These defaults are used for a hand-recorded voice.m4a;
 # make_voice.py writes timings.json with the real start of each scene, which replaces them.
@@ -93,9 +97,12 @@ def merge(raw_video, lead_in):
     cmd = [ffmpeg, "-y", "-ss", f"{lead_in:.2f}", "-i", str(raw_video)]  # skip the page-loading lead-in
     if VOICE.exists():
         cmd += ["-i", str(VOICE), "-c:a", "aac", "-shortest"]
+    if SUBTITLES.exists():
+        # relative path on purpose: ffmpeg's filter syntax breaks on the ":" in "C:\..."
+        cmd += ["-vf", f"subtitles={SUBTITLES.as_posix()}:force_style='{SUBTITLE_STYLE}'"]
     cmd += ["-c:v", "libx264", "-pix_fmt", "yuv420p", str(out)]
     subprocess.run(cmd, check=True)
-    print("saved", out, "(with voiceover)" if VOICE.exists() else "(no voice.m4a found - silent)")
+    print("saved", out, "| voiceover:", VOICE.exists(), "| subtitles:", SUBTITLES.exists())
 
 
 if __name__ == "__main__":
