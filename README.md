@@ -41,8 +41,8 @@ jupyter notebook review_triage.ipynb   # then Kernel > Restart & Run All
 
 **Video (optional).**
 1. Run `pip install playwright imageio-ffmpeg kokoro soundfile` and `playwright install chromium`.
-2. Run `python video/make_voice.py`. It turns `video/script.md` into a voiceover (`video/voice.m4a`) with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M), an open-weights text-to-speech model that runs offline. **The narration is synthesised, not recorded.**
-3. Run `python video/record.py`. It exports the notebook to HTML, records Chromium scrolling through each section for exactly as long as its narration, and merges everything into `video/walkthrough.mp4`.
+2. Run `python video/make_voice.py`. It turns `video/script.md` into a voiceover (`video/voice.m4a`) with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M), an open-weights text-to-speech model that runs offline. **The narration is synthesised, not recorded.** It also writes `video/subtitles.srt` from Kokoro's per-word timings.
+3. Run `python video/record.py`. It exports the notebook to HTML, records Chromium scrolling through each section for exactly as long as its narration, and merges everything into `video/walkthrough.mp4`, with the subtitles burned in.
 
 To use your own voice instead, save it as `video/voice.m4a` and skip step 2.
 
